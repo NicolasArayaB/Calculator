@@ -1,62 +1,90 @@
-// Add function.
-const add = (a, b) => a + b;
-
-// Subtract function.
-const subtract = (a, b) => a - b;
-
-// Multiply function.
-const multiply = (a, b) => a * b;
-
-// Divide function.
-const divide = (a, b) => a / b;
-
-// Operate Function.
-function operate(x, a, b) {
-    if (x == '+') {
-        add(a, b);
-    } else if (x == '-') {
-        subtract(a, b);
-    } else if (x == '*') {
-        multiply(a, b);
-    } else if (x == '/') {
-        divide(a, b);
-    }
-}
+let result = 0;
+let display = document.getElementById("display");
 
 // Populate de display.
-function display(a) {
-    let display = document.getElementById("display")
-    if (parseInt(a) || a == "0") {
-        display.textContent += a;  
+function displayScreen(a) {
+    let displayArray = display.textContent.split(/([^\d.]+)/);
+    if (parseFloat(a) || a == "0") {
+        display.textContent += a;
     } else if (a == "add") {
         display.textContent += "+";
+        
+        if (displayArray.length > 2) {
+            operate(displayArray);
+            display.textContent += "+";
+        }
     } else if (a == "subs") {
         display.textContent += "-";
+        if (displayArray.length > 2) {
+            operate(displayArray);
+            display.textContent += "-";
+        }
     } else if (a == "multi") {
         display.textContent += "*";
+        if (displayArray.length > 2) {
+            operate(displayArray);
+            display.textContent += "*";
+    
+        }
     } else if (a == "divide") {
         display.textContent += "/";
+        if (displayArray.length > 2) {
+            operate(displayArray);
+            display.textContent += "/";
+        }
     } else if (a == "dot") {
         display.textContent += ".";
     } else if (a == "clear") {
         display.textContent = "";
     } else if (a == "equal") {
-        let displayValue = display.textContent;
-        let num = {}
-        let operator = displayValue.replace(/\d+(\.\d+)?/g, (m) => {
-            num = num + " " + m;
-            return "";
-        });
-        num = num.split(" ");
-        let i = 2;
-        while(num[i]) {
-            console.log(num[i]);
-            i++;
+        operate(displayArray);
+    } else if (a == "del") {
+        let str = display.textContent
+        display.textContent = str.substring(0, str.length-1)
+    }
+}
+
+// Operate Function.
+function operate(a) {
+    let i = 0;
+    for (i = 0; a[i] != null; i++) {
+        if (!parseFloat(a[i])) {  
+            if (a[i] == '+') {
+                add(parseFloat(a[i-1]), parseFloat(a[i+1]));
+            } else if (a[i] == '-') {
+                subtract(parseFloat(a[i-1]), parseFloat(a[i+1]));
+            } else if (a[i] == '*') {
+                multiply(parseFloat(a[i-1]), parseFloat(a[i+1]));
+            } else if (a[i] == '/') {
+                divide(parseFloat(a[i-1]), parseFloat(a[i+1]));
+            }
         }
+    }
+    updatedDisplay(result)
+}
+
+// Add function.
+const add = (a, b) =>  result = parseFloat(a + b);
+// Subtract function.
+const subtract = (a, b) => result = parseFloat(a - b);
+
+// Multiply function.
+const multiply = (a, b) => result = parseFloat(a * b);
+
+// Divide function.
+const divide = (a, b) => 
+    result = parseFloat(a / b);
+    
+function updatedDisplay(a) {
+    display.textContent = "";
+    if (isNaN(a)) {
+        display.textContent = "ERROR";
+    } else {
+        display.textContent = parseFloat(a);
     }
 }
 
 document.getElementById("buttons").addEventListener("click", (e) => {
     let tId = e.target.id
-    display(tId);
+    displayScreen(tId);
 });
